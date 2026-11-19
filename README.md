@@ -24,7 +24,7 @@ which is the point: one data plug, two different agents.
 ## Quick start
 
 ```
-git clone https://github.com/<your-account>/sealevel-agent.git
+git clone https://github.com/jpliu168/sealevel-agent.git
 cd sealevel-agent
 npm install -g .        # once: adds the `sealevel` command (no dependencies are downloaded)
 sealevel                # menu: Claude Code or local model, then web page or terminal
