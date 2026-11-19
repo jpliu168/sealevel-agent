@@ -1,0 +1,21 @@
+# downloaded data, cache, and results (re-created on demand)
+claude-code/data/*
+ollama/data/*
+!claude-code/data/.gitkeep
+!ollama/data/.gitkeep
+claude-code/outputs/**
+ollama/outputs/**
+!claude-code/outputs/
+!claude-code/outputs/.gitkeep
+!claude-code/outputs/scripts/
+!claude-code/outputs/scripts/.gitkeep
+!ollama/outputs/
+!ollama/outputs/.gitkeep
+
+# local state
+.sealevel_session
+.claude/settings.local.json
+node_modules/
+.DS_Store
+*.log
+.env

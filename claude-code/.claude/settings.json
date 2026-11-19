@@ -1,0 +1,15 @@
+{
+  "enabledMcpjsonServers": ["noaa-tides"],
+  "permissions": {
+    "allow": [
+      "mcp__noaa-tides",
+      "Read(data/**)",
+      "Read(outputs/**)",
+      "Write(outputs/**)",
+      "Edit(outputs/**)",
+      "Bash(python3 outputs/scripts/*)",
+      "Bash(node outputs/scripts/*)",
+      "Bash(open outputs/*)"
+    ]
+  }
+}

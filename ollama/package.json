@@ -1,0 +1,9 @@
+{
+  "name": "sealevel-local",
+  "version": "1.0.0",
+  "description": "NC State MEAS sea-level agent on a local LLM (Ollama): own harness + NOAA tide-gauge MCP server + skills, CLI and web",
+  "type": "module",
+  "bin": { "sealevel-local": "bin/sealevel-local.mjs" },
+  "engines": { "node": ">=18" },
+  "license": "MIT"
+}

@@ -1,0 +1,137 @@
+[
+  {
+    "name": "load_skill",
+    "description": "Read the full instructions (SKILL.md) for one of the available skills. Call it before following a skill for the first time in a conversation.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "skill name, e.g. sea-level-trend"
+        }
+      },
+      "required": [
+        "name"
+      ]
+    }
+  },
+  {
+    "name": "geocode",
+    "description": "Convert a US place name (city, town, beach, or NOAA gauge name) to latitude/longitude.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "place": {
+          "type": "string",
+          "description": "e.g. \"Duck, NC\" or \"Norfolk\""
+        }
+      },
+      "required": [
+        "place"
+      ]
+    }
+  },
+  {
+    "name": "stations_within_radius",
+    "description": "List NOAA CO-OPS water-level tide gauges within a radius of a point, nearest first, with great-circle distance in miles.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "lat": {
+          "type": "number"
+        },
+        "lon": {
+          "type": "number"
+        },
+        "radius_miles": {
+          "type": "number",
+          "description": "default 50"
+        }
+      },
+      "required": [
+        "lat",
+        "lon"
+      ]
+    }
+  },
+  {
+    "name": "list_stations_in_state",
+    "description": "List all NOAA water-level tide gauges in a US state or territory.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "state": {
+          "type": "string",
+          "description": "two-letter code, e.g. NC"
+        }
+      },
+      "required": [
+        "state"
+      ]
+    }
+  },
+  {
+    "name": "get_sea_level_trend",
+    "description": "Fetch NOAA monthly mean sea level for a gauge and year range (cached for 10 days), remove the seasonal cycle, and fit a linear trend. Returns coverage, trend (mm/yr) with 95% CI corrected for autocorrelation, and record months. The series is kept in the page for plotting.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "station_id": {
+          "type": "string"
+        },
+        "start_year": {
+          "type": "integer"
+        },
+        "end_year": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "station_id",
+        "start_year",
+        "end_year"
+      ]
+    }
+  },
+  {
+    "name": "get_long_term_trend",
+    "description": "NOAA's official long-term relative sea level trend for a gauge (multi-decade linear fit, mm/yr with 95% CI, start and end year). Use it to put a short-window trend in context.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "station_id": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "station_id"
+      ]
+    }
+  },
+  {
+    "name": "plot_stations",
+    "description": "Plot seasonal-anomaly time series and trend lines for up to 4 gauges already fetched with get_sea_level_trend, and show their trend bars. Call once with all gauges to compare.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "station_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 4
+        },
+        "labels": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "optional display names, same order"
+        }
+      },
+      "required": [
+        "station_ids"
+      ]
+    }
+  }
+]

@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "noaa-tides": {
+      "command": "node",
+      "args": ["../shared/mcp/noaa-tides-server.mjs"]
+    }
+  }
+}
