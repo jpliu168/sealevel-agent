@@ -1,14 +1,21 @@
 # downloaded data, cache, and results (re-created on demand)
 claude-code/data/*
+codex/data/*
 ollama/data/*
 !claude-code/data/.gitkeep
+!codex/data/.gitkeep
 !ollama/data/.gitkeep
 claude-code/outputs/**
+codex/outputs/**
 ollama/outputs/**
 !claude-code/outputs/
 !claude-code/outputs/.gitkeep
 !claude-code/outputs/scripts/
 !claude-code/outputs/scripts/.gitkeep
+!codex/outputs/
+!codex/outputs/.gitkeep
+!codex/outputs/scripts/
+!codex/outputs/scripts/.gitkeep
 !ollama/outputs/
 !ollama/outputs/.gitkeep
 

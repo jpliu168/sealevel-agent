@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>sealevel web (Codex) — NC State MEAS</title>
+<style>
+:root{color-scheme:light;--bg:#f6f5f2;--s1:#fcfcfb;--s2:#efeee9;--bd:#dddcd6;--t1:#0b0b0b;--t2:#52514e;--t3:#7a7974;--ac:#0b5c8a;--user:#e3eef8;--mcp:#1baf7a;--skill:#6250d6;--tool:#2a78d6;--err:#c0392b}
+@media (prefers-color-scheme:dark){:root{color-scheme:dark;--bg:#121211;--s1:#1a1a19;--s2:#242422;--bd:#363633;--t1:#f0efec;--t2:#c3c2b7;--t3:#8f8e86;--ac:#6fb3e0;--user:#1d2b38;--mcp:#199e70;--skill:#9085e9;--tool:#3987e5;--err:#e66767}}
+*{box-sizing:border-box}html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--t1);font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;display:grid;grid-template-rows:auto 1fr auto;grid-template-columns:1fr 320px}
+header{grid-column:1/3;display:flex;align-items:center;gap:12px;padding:10px 18px;border-bottom:1px solid var(--bd);background:var(--s1)}
+header h1{margin:0;font-size:17px;flex:1}header h1 small{font-weight:400;color:var(--t3);font-size:12.5px;margin-left:8px}
+.badge{font-size:12px;padding:3px 9px;border-radius:999px;border:1px solid var(--bd);color:var(--t2)}
+button{font:inherit;cursor:pointer;border-radius:8px;border:1px solid var(--bd);background:var(--s1);color:var(--t1);padding:6px 12px}
+button.primary{background:var(--ac);border-color:var(--ac);color:#fff;font-weight:600}button:disabled{opacity:.5;cursor:default}
+main{overflow:auto;padding:18px 22px}
+aside{grid-row:2/4;grid-column:2;border-left:1px solid var(--bd);background:var(--s1);overflow:auto;padding:14px}
+aside h3{margin:0 0 8px;font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--t3)}
+.file{display:flex;gap:8px;align-items:baseline;padding:5px 6px;border-radius:6px;cursor:pointer;font-size:13px;word-break:break-all}
+.file:hover{background:var(--s2)}.file .k{font-size:10.5px;color:var(--t3);min-width:44px;text-transform:uppercase}
+footer{grid-column:1;border-top:1px solid var(--bd);background:var(--s1);padding:10px 22px;display:flex;gap:8px}
+footer textarea{flex:1;font:inherit;padding:9px 12px;border:1px solid var(--bd);border-radius:10px;background:var(--s1);color:var(--t1);resize:none;height:44px}
+.empty{max-width:760px;margin:30px auto;text-align:center;color:var(--t2)}.empty h2{color:var(--t1);margin:0 0 6px}
+.ex{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:14px}.ex button{border-radius:999px;background:var(--s2);font-size:13.5px}
+.legend{margin-top:18px;font-size:13px;color:var(--t3)}.legend span{margin:0 8px}
+.msg{max-width:900px;margin:12px auto}.msg.user{text-align:right}
+.msg.user .b{display:inline-block;background:var(--user);padding:8px 14px;border-radius:14px;text-align:left;max-width:80%}
+.msg.bot .b{background:var(--s1);border:1px solid var(--bd);border-radius:14px;padding:12px 16px}
+.steps{font-size:12.5px;margin:0 0 8px;border-left:2px solid var(--bd);padding-left:10px}
+.steps summary{cursor:pointer;color:var(--t3)}
+.st{margin:4px 0}.st .w{font-weight:700;font-size:10.5px;letter-spacing:.05em;text-transform:uppercase;margin-right:6px}
+.st .x{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11.5px;color:var(--t2);word-break:break-word}
+.st.mcp .w{color:var(--mcp)}.st.skill .w{color:var(--skill)}.st.tool .w{color:var(--tool)}.st.think .w{color:var(--t3)}.st.err .w,.st.err .x{color:var(--err)}
+.st.res{margin-left:14px;color:var(--t3)}
+.ans p{margin:0 0 8px}.ans h1,.ans h2,.ans h3{font-size:16px;margin:12px 0 6px}.ans ul,.ans ol{margin:4px 0 8px;padding-left:22px}
+.ans code{font-size:12.5px;background:var(--s2);padding:1px 4px;border-radius:4px}.ans pre{background:var(--s2);padding:10px;border-radius:8px;overflow:auto}
+table{border-collapse:collapse;font-size:12.5px;margin:6px 0;font-variant-numeric:tabular-nums}th,td{border-bottom:1px solid var(--bd);padding:4px 8px;text-align:right}th:first-child,td:first-child{text-align:left}
+.att{margin-top:12px;border-top:1px solid var(--bd);padding-top:10px}
+.att .card{margin:10px 0}.att .cap{font-size:12.5px;color:var(--t3);display:flex;gap:10px;align-items:center}
+.att img{max-width:100%;background:#fff;border:1px solid var(--bd);border-radius:8px;margin-top:4px}
+.tbl{max-height:320px;overflow:auto;border:1px solid var(--bd);border-radius:8px}
+.thinking{color:var(--t3)}.thinking::after{content:'';animation:d 1.2s steps(4,end) infinite}@keyframes d{0%{content:''}25%{content:'.'}50%{content:'..'}75%{content:'...'}}
+.meta,.rows{font-size:11.5px;color:var(--t3);margin-top:8px}
+#viewer{position:fixed;inset:5%;background:var(--s1);border:1px solid var(--bd);border-radius:12px;box-shadow:0 10px 40px rgba(0,0,0,.25);display:none;flex-direction:column;z-index:10}
+#viewer .vh{display:flex;gap:8px;align-items:center;padding:10px 14px;border-bottom:1px solid var(--bd)}#viewer .vh b{flex:1;word-break:break-all}
+#viewer .vb{overflow:auto;padding:14px}
+a{color:var(--ac)}
+@media (max-width:900px){body{grid-template-columns:1fr}aside{display:none}}
+</style>
+</head>
+<body>
+<header>
+  <h1>sealevel web · Codex<small>OpenAI Codex + NOAA tide-gauge MCP + skills · NC State MEAS</small></h1>
+  <span class="badge" id="sess">new conversation</span>
+  <button id="newchat">New chat</button>
+</header>
+<main id="main">
+  <div class="empty" id="empty">
+    <h2>Ask anything about sea level</h2>
+    <div>The agent finds the nearest NOAA tide gauge, downloads the data, analyzes it, and shows plots and data files right here.</div>
+    <div class="ex" id="ex"></div>
+    <div class="legend">Steps are color-coded: <span style="color:var(--skill)">■ Skill</span><span style="color:var(--mcp)">■ MCP tool</span><span style="color:var(--tool)">■ Codex tool</span></div>
+  </div>
+  <div id="chat"></div>
+</main>
+<aside>
+  <h3>Files the agent created</h3>
+  <div id="files"><div class="file" style="cursor:default;color:var(--t3)">none yet</div></div>
+</aside>
+<footer>
+  <textarea id="q" placeholder="e.g. Compare Duck, Norfolk and Charleston since 1996 and plot them" aria-label="Question"></textarea>
+  <button class="primary" id="send">Send</button>
+</footer>
+<div id="viewer"><div class="vh"><b id="vt"></b><a id="vdl" href="#">Download</a><button id="vclose">Close</button></div><div class="vb" id="vb"></div></div>
+
+<script>
+const $=s=>document.querySelector(s);
+const esc=t=>String(t??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+let SESSION=sessionStorage.getItem('sealevel_session')||null, RUNNING=false;
+const fileURL=p=>'/file/'+p.split('/').map(encodeURIComponent).join('/');
+
+/* ---------- tiny Markdown renderer (headings, lists, tables, code, links, images) ---------- */
+function md(src,base=''){
+  const res=p=>/^(https?:|\/)/.test(p)?p:fileURL(normPath(base?base+'/'+p:p));
+  const inline=t=>esc(t).replace(/!\[([^\]]*)\]\(([^)]+)\)/g,(m,a,p)=>`<img alt="${a}" src="${res(p.replace(/&amp;/g,'&'))}">`)
+    .replace(/\[([^\]]+)\]\(([^)]+)\)/g,(m,a,p)=>`<a href="${/^https?:/.test(p)?p:res(p)}" target="_blank">${a}</a>`)
+    .replace(/\*\*(.+?)\*\*/g,'<b>$1</b>').replace(/(^|[^*])\*([^*\n]+)\*/g,'$1<i>$2</i>')
+    .replace(/`([^`]+)`/g,(m,c)=>/^(outputs|data)\/[\w./-]+\.\w+$/.test(c)?`<a href="#" data-open="${c}"><code>${c}</code></a>`:`<code>${c}</code>`);
+  const L=src.replace(/\r/g,'').split('\n');let h='',i=0;
+  while(i<L.length){const l=L[i];
+    if(/^```/.test(l)){let c=[];i++;while(i<L.length&&!/^```/.test(L[i]))c.push(L[i++]);i++;h+=`<pre><code>${esc(c.join('\n'))}</code></pre>`;continue}
+    if(/^\s*\|.*\|\s*$/.test(l)&&i+1<L.length&&/^\s*\|[\s:|-]+\|\s*$/.test(L[i+1])){const row=r=>r.trim().replace(/^\||\|$/g,'').split('|').map(c=>c.trim());
+      h+='<table><thead><tr>'+row(l).map(c=>`<th>${inline(c)}</th>`).join('')+'</tr></thead><tbody>';i+=2;
+      while(i<L.length&&/^\s*\|.*\|\s*$/.test(L[i]))h+='<tr>'+row(L[i++]).map(c=>`<td>${inline(c)}</td>`).join('')+'</tr>';h+='</tbody></table>';continue}
+    const hd=l.match(/^(#{1,4})\s+(.*)/);if(hd){h+=`<h${Math.min(3,hd[1].length)}>${inline(hd[2])}</h${Math.min(3,hd[1].length)}>`;i++;continue}
+    if(/^\s*([-*•]|\d+\.)\s+/.test(l)){const ol=/^\s*\d+\./.test(l);h+=ol?'<ol>':'<ul>';while(i<L.length&&/^\s*([-*•]|\d+\.)\s+/.test(L[i]))h+='<li>'+inline(L[i++].replace(/^\s*([-*•]|\d+\.)\s+/,''))+'</li>';h+=ol?'</ol>':'</ul>';continue}
+    if(!l.trim()){i++;continue}
+    let p=[];while(i<L.length&&L[i].trim()&&!/^(```|#{1,4}\s|\s*([-*•]|\d+\.)\s+|\s*\|)/.test(L[i]))p.push(L[i++]);
+    if(!p.length)p.push(L[i++]);h+='<p>'+inline(p.join(' '))+'</p>';}
+  return h;
+}
+function normPath(p){const o=[];p.split('/').forEach(s=>{if(s==='..')o.pop();else if(s&&s!=='.')o.push(s)});return o.join('/')}
+
+/* ---------- attachments: plots, tables, reports shown inline ---------- */
+function parseCSV(t){return t.trim().split('\n').map(r=>{const o=[];let c='',q=false;for(const ch of r){if(ch==='"')q=!q;else if(ch===','&&!q){o.push(c);c=''}else c+=ch}o.push(c);return o})}
+async function renderFile(f,into,full=false){
+  const card=document.createElement('div');card.className='card';
+  card.innerHTML=`<div class="cap"><b>${esc(f.path)}</b><a href="${fileURL(f.path)}?download">download</a>${full?'':`<a href="#" data-open="${esc(f.path)}">open</a>`}</div>`;
+  into.appendChild(card);
+  if(f.kind==='image'){const im=document.createElement('img');im.src=fileURL(f.path)+'?t='+f.mtime;card.appendChild(im)}
+  else if(f.kind==='table'){const rows=parseCSV(await (await fetch(fileURL(f.path))).text());const n=full?rows.length:Math.min(rows.length,13);
+    const d=document.createElement('div');d.className='tbl';d.innerHTML='<table><thead><tr>'+rows[0].map(c=>`<th>${esc(c)}</th>`).join('')+'</tr></thead><tbody>'+rows.slice(1,n).map(r=>'<tr>'+r.map(c=>`<td>${esc(c)}</td>`).join('')+'</tr>').join('')+'</tbody></table>';
+    card.appendChild(d);if(!full&&rows.length>n){const m=document.createElement('div');m.className='rows';m.textContent=`showing ${n-1} of ${rows.length-1} rows`;card.appendChild(m)}}
+  else if(f.kind==='markdown'){const d=document.createElement('div');d.className='ans';d.innerHTML=md(await (await fetch(fileURL(f.path))).text(),f.path.split('/').slice(0,-1).join('/'));card.appendChild(d)}
+  else if(['code','json','text'].includes(f.kind)){const t=await (await fetch(fileURL(f.path))).text();const pre=document.createElement('pre');pre.style.cssText='max-height:'+(full?'none':'220px')+';overflow:auto;font-size:12px;background:var(--s2);padding:10px;border-radius:8px';pre.textContent=t;card.appendChild(pre)}
+}
+async function openViewer(p){const f=(await (await fetch('/api/files')).json()).files.find(x=>x.path===p)||{path:p,kind:'file',mtime:Date.now()};
+  $('#vt').textContent=p;$('#vdl').href=fileURL(p)+'?download';$('#vb').innerHTML='';$('#viewer').style.display='flex';await renderFile(f,$('#vb'),true);$('#vb').querySelector('.cap')?.remove()}
+$('#vclose').onclick=()=>$('#viewer').style.display='none';
+document.addEventListener('keydown',e=>{if(e.key==='Escape')$('#viewer').style.display='none'});
+document.addEventListener('click',e=>{const a=e.target.closest('[data-open]');if(a){e.preventDefault();openViewer(a.dataset.open)}});
+async function refreshFiles(){const {files}=await (await fetch('/api/files')).json();
+  $('#files').innerHTML=files.length?files.map(f=>`<div class="file" data-open="${esc(f.path)}"><span class="k">${f.kind}</span><span>${esc(f.path)}</span></div>`).join(''):'<div class="file" style="cursor:default;color:var(--t3)">none yet</div>'}
+
+/* ---------- chat ---------- */
+function addUser(q){$('#empty').style.display='none';const d=document.createElement('div');d.className='msg user';d.innerHTML=`<div class="b">${esc(q)}</div>`;$('#chat').appendChild(d);down()}
+function addBot(){const d=document.createElement('div');d.className='msg bot';
+  d.innerHTML=`<div class="b"><details class="steps" open><summary>Agent steps (0)</summary><div class="list"></div></details><div class="ans"><div class="thinking">Working</div></div><div class="att" style="display:none"></div><div class="meta"></div></div>`;
+  $('#chat').appendChild(d);down();return d}
+const down=()=>{const m=$('#main');m.scrollTop=m.scrollHeight};
+function step(bot,cls,who,what){const l=bot.querySelector('.list');const s=document.createElement('div');s.className='st '+cls;s.innerHTML=(who?`<span class="w">${esc(who)}</span>`:'')+`<span class="x">${esc(what)}</span>`;l.appendChild(s);
+  const n=l.querySelectorAll('.st:not(.res)').length;bot.querySelector('summary').textContent=`Agent steps (${n})`;down()}
+async function ask(q){
+  q=q.trim();if(!q||RUNNING)return;RUNNING=true;$('#send').disabled=true;$('#q').value='';
+  addUser(q);const bot=addBot();const att=bot.querySelector('.att');const shown=new Set();let answered=false;
+  try{
+    const r=await fetch('/api/chat',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({message:q,session_id:SESSION})});
+    if(!r.ok){const j=await r.json().catch(()=>({}));throw new Error(j.error||('HTTP '+r.status))}
+    const rd=r.body.getReader(),dec=new TextDecoder();let buf='';
+    for(;;){const {value,done}=await rd.read();if(done)break;buf+=dec.decode(value,{stream:true});let i;
+      while((i=buf.indexOf('\n'))>=0){const line=buf.slice(0,i);buf=buf.slice(i+1);if(!line.trim())continue;const ev=JSON.parse(line);
+        if(ev.type==='start'){SESSION=ev.session_id;sessionStorage.setItem('sealevel_session',SESSION);$('#sess').textContent='session '+SESSION.slice(0,8);
+          step(bot,'think','Harness',`Codex started · MCP noaa-tides`)}
+        else if(ev.type==='thinking')step(bot,'think','Agent',ev.text);
+        else if(ev.type==='tool')step(bot,/^MCP/.test(ev.who)?'mcp':/^Skill/.test(ev.who)?'skill':'tool',ev.who,ev.what);
+        else if(ev.type==='result')step(bot,'res'+(ev.error?' err':''),'','↳ '+ev.text);
+        else if(ev.type==='files'){att.style.display='block';for(const f of ev.files){if(shown.has(f.path)&&f.kind!=='image')continue;shown.add(f.path);
+          att.querySelectorAll('.card').forEach(c=>{if(c.querySelector('b')?.textContent===f.path)c.remove()});
+          if(['image','table','markdown'].includes(f.kind))await renderFile(f,att);else{const c=document.createElement('div');c.className='cap';c.innerHTML=`<a href="#" data-open="${esc(f.path)}">${esc(f.path)}</a>`;att.appendChild(c)}}
+          refreshFiles()}
+        else if(ev.type==='answer'){answered=true;bot.querySelector('.ans').innerHTML=md(ev.text||'(no answer text)')}
+        else if(ev.type==='error'){answered=true;bot.querySelector('.ans').innerHTML=`<p style="color:var(--err)">Error: ${esc(ev.message)}</p>`}
+        else if(ev.type==='done'){bot.querySelector('.b > .meta').textContent=ev.usage?`OpenAI Codex · ${ev.usage.input_tokens||0} input · ${ev.usage.output_tokens||0} output tokens`:'OpenAI Codex'}
+        down()}}
+    if(!answered)bot.querySelector('.ans').innerHTML='<p>(The agent finished without an answer.)</p>';
+    bot.querySelector('details').open=false;
+  }catch(e){bot.querySelector('.ans').innerHTML=`<p style="color:var(--err)">Error: ${esc(e.message)}</p>`}
+  RUNNING=false;$('#send').disabled=false;$('#q').focus();refreshFiles();down();
+}
+const EX=["How has sea level changed at Wilmington, NC over the past 10 years?","Compare Duck, Norfolk and Charleston since 1996 and plot them","Which NC gauge has the highest and which the lowest rate?","Why is Galveston so different from Boston?","Is sea level rise accelerating at Duck? Show your work.","Make a one-page report on Outer Banks sea level for my class"];
+EX.forEach(t=>{const b=document.createElement('button');b.textContent=t;b.onclick=()=>ask(t);$('#ex').appendChild(b)});
+$('#send').onclick=()=>ask($('#q').value);
+$('#q').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();ask($('#q').value)}});
+$('#newchat').onclick=()=>{if(RUNNING)return;SESSION=null;sessionStorage.removeItem('sealevel_session');$('#chat').innerHTML='';$('#empty').style.display='block';$('#sess').textContent='new conversation'};
+if(SESSION)$('#sess').textContent='session '+SESSION.slice(0,8);
+refreshFiles();
+</script>
+</body>
+</html>

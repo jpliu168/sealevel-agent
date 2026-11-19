@@ -3,11 +3,12 @@
  * sealevel — one command for both versions of the sea-level agent.
  *
  *   sealevel                        menu: pick Claude Code or a local model, then web or terminal
- *   sealevel claude web             skip the menu (engine: claude | ollama; mode: web | chat | doctor)
+ *   sealevel claude web             skip the menu (engine: claude | codex | ollama; mode: web | chat | doctor)
  *   sealevel ollama chat --model granite4.1:8b
  *   sealevel claude ask "How has sea level changed at Duck, NC?"
  *
- * It only starts the right program: claude-code/bin/sealevel.mjs or ollama/bin/sealevel-local.mjs.
+ * It only starts the right program: claude-code/bin/sealevel.mjs, codex/bin/sealevel-codex.mjs,
+ * or ollama/bin/sealevel-local.mjs.
  */
 import path from 'node:path';
 import fs from 'node:fs';
@@ -22,16 +23,21 @@ const bold = s => c('1', s), dim = s => c('2', s), green = s => c('32', s), red 
 
 const ENGINES = {
   claude: { label: 'Claude Code (cloud, most capable)', dir: 'claude-code', script: 'bin/sealevel.mjs' },
+  codex: { label: 'OpenAI Codex (cloud, ChatGPT or OpenAI account)', dir: 'codex', script: 'bin/sealevel-codex.mjs' },
   ollama: { label: 'Local model via Ollama (private, free, slower)', dir: 'ollama', script: 'bin/sealevel-local.mjs' },
 };
 const MODES = { web: 'Web page (plots and data in the browser)', chat: 'Terminal chat', doctor: 'Check the setup' };
-const ALIAS = { local: 'ollama', 'claude-code': 'claude', cc: 'claude', cli: 'chat', terminal: 'chat', check: 'doctor' };
+const ALIAS = { local: 'ollama', 'claude-code': 'claude', cc: 'claude', openai: 'codex', cli: 'chat', terminal: 'chat', check: 'doctor' };
 const OLLAMA = (process.env.OLLAMA_HOST || 'http://localhost:11434').replace(/\/$/, '').replace(/^(?!https?:)/, 'http://');
 const DEFAULT_MODEL = process.env.SEALEVEL_MODEL || 'qwen3.5:9b';
 
 function claudeStatus() {
   const v = spawnSync(process.env.SEALEVEL_CLAUDE_BIN || 'claude', ['--version'], { encoding: 'utf8', timeout: 8000 });
   return v.status === 0 ? { ok: true, text: 'installed ' + v.stdout.trim().split('\n')[0].replace(/\s*\(Claude Code\)/, '') } : { ok: false, text: 'not found (npm install -g @anthropic-ai/claude-code)' };
+}
+function codexStatus() {
+  const v = spawnSync(process.env.SEALEVEL_CODEX_BIN || 'codex', ['--version'], { encoding: 'utf8', timeout: 8000 });
+  return v.status === 0 ? { ok: true, text: 'installed ' + v.stdout.trim().split('\n')[0].replace(/^codex-cli\s*/, '') } : { ok: false, text: 'not found (npm install -g @openai/codex)' };
 }
 async function ollamaStatus() {
   try {
@@ -67,9 +73,9 @@ async function pick(rl, title, options, def) { // options: [[key, label, note?]]
     console.log(`${bold('sealevel')} — NC State MEAS sea-level agent
 
   sealevel                         menu
-  sealevel <engine> <mode>         engine: claude | ollama     mode: web | chat | doctor
+  sealevel <engine> <mode>         engine: claude | codex | ollama     mode: web | chat | doctor
   sealevel <engine> ask "question"
-  options for ollama: --model NAME  --think on|off
+  options: --model NAME (codex, ollama)   --think on|off (ollama)
   any other options are passed to the version's own command (e.g. --port 9000)`);
     return;
   }
@@ -77,7 +83,7 @@ async function pick(rl, title, options, def) { // options: [[key, label, note?]]
   for (let i = 0; i < args.length; i++) { const a = args[i]; if (a.startsWith('--')) { rest.push(a); if (args[i + 1] && !args[i + 1].startsWith('--') && ['--model', '--think', '--port'].includes(a)) rest.push(args[++i]); } else pos.push(a); }
   let engine = ALIAS[pos[0]] || pos[0], mode = ALIAS[pos[1]] || pos[1];
   const question = mode === 'ask' ? pos.slice(2).join(' ') : '';
-  if (engine && !ENGINES[engine]) { console.log(red(`Unknown engine "${engine}". Use claude or ollama.`)); process.exit(1); }
+  if (engine && !ENGINES[engine]) { console.log(red(`Unknown engine "${engine}". Use claude, codex, or ollama.`)); process.exit(1); }
   if (mode && !MODES[mode] && mode !== 'ask') { console.log(red(`Unknown mode "${mode}". Use web, chat, doctor, or ask.`)); process.exit(1); }
 
   let rl = null;
@@ -88,11 +94,13 @@ async function pick(rl, title, options, def) { // options: [[key, label, note?]]
   let ost = null;
   if (!engine) {
     process.stdout.write(dim('checking what is available… '));
-    const cs = claudeStatus(); ost = await ollamaStatus(); process.stdout.write('\r' + ' '.repeat(40) + '\r');
+    const cs = claudeStatus(), xs = codexStatus(); ost = await ollamaStatus(); process.stdout.write('\r' + ' '.repeat(40) + '\r');
+    const mark = s => (s.ok ? green('✔ ') : red('✘ ')) + dim(s.text);
     engine = await pick(rl, 'Which AI should answer?', [
-      ['claude', ENGINES.claude.label, (cs.ok ? green('✔ ') : red('✘ ')) + dim(cs.text)],
-      ['ollama', ENGINES.ollama.label, (ost.ok ? green('✔ ') : red('✘ ')) + dim(ost.text)],
-    ], cs.ok || !ost.ok ? 'claude' : 'ollama');
+      ['claude', ENGINES.claude.label, mark(cs)],
+      ['codex', ENGINES.codex.label, mark(xs)],
+      ['ollama', ENGINES.ollama.label, mark(ost)],
+    ], cs.ok ? 'claude' : xs.ok ? 'codex' : ost.ok ? 'ollama' : 'claude');
   }
   if (!mode) mode = await pick(rl, 'How do you want to use it?', Object.entries(MODES).map(([k, v]) => [k, v]), 'web');
 

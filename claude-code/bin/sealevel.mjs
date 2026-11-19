@@ -103,7 +103,8 @@ async function doctor() {
   catch { bad('NOAA API not reachable — the agent will use built-in data (27 gauges, 2016–2025)'); }
 }
 
-const [cmd, ...rest] = process.argv.slice(2);
+const argv = process.argv.slice(2), pos = argv.filter((a, i) => !a.startsWith('--') && argv[i - 1] !== '--port');
+const [cmd] = pos, rest = cmd ? argv.slice(argv.indexOf(cmd) + 1) : argv;
 const usage = `${bold('sealevel')} — MEAS sea-level agent
 
   sealevel                     chat in the terminal

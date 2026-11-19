@@ -1,0 +1,8 @@
+# Project config for OpenAI Codex (loaded when you trust this folder).
+# The `sealevel` launcher passes the same settings with -c, so it works either way.
+[mcp_servers.noaa-tides]
+command = "node"
+args = ["../shared/mcp/noaa-tides-server.mjs"]
+startup_timeout_sec = 20
+tool_timeout_sec = 120
+default_tools_approval_mode = "approve"
